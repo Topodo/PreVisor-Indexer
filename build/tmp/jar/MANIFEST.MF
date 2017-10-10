@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Implementation-Title: previsor-indexer
+Implementation-Version: 1.0
+Main-Class: IndexerMain
+
