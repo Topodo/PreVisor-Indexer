@@ -2,6 +2,8 @@ package cl.previsor.indexer;
 
 import cl.previsor.indexer.databases.MongoLoader;
 import cl.previsor.indexer.databases.Tweet;
+import cl.previsor.indexer.indexer.TweetIndexer;
+import org.apache.lucene.queryparser.classic.ParseException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,16 +25,15 @@ public class IndexerMain {
         File file = new File(IndexerMain.class.getProtectionDomain().getCodeSource().getLocation().getPath());
         Properties properties = new Properties();
         try{
-            String resourcePath = file.getPath().replace("classes", "") + "/resources/bd.properties";
+            String resourcePath = file.getPath().replace("libs/PreVisor-Indexer-1.0.jar", "") + "resources/main/bd.properties";
             resourcePath = resourcePath.replace("%20", " ");
             InputStream inputStream = new FileInputStream(resourcePath);
             properties.load(inputStream);
             List<Tweet> tweets = new MongoLoader(properties.getProperty("mongo_host"), properties.getProperty("mongo_port"), properties.getProperty("mongo_db_name"), properties.getProperty("mongo_coll_name")).getTweets();
-            for(Tweet tweet : tweets){
-                System.out.println(tweet.getTweetText());
-            }
+            TweetIndexer indexer = new TweetIndexer(tweets);
+            indexer.searchTweets("ambulancias");
 
-        } catch(IOException e){
+        } catch(IOException | ParseException e){
             e.printStackTrace();
         }
     }
