@@ -3,6 +3,7 @@ package cl.previsor.indexer;
 import cl.previsor.indexer.databases.MongoLoader;
 import cl.previsor.indexer.databases.Tweet;
 import cl.previsor.indexer.indexer.TweetIndexer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
 
 import java.io.File;
@@ -24,6 +25,7 @@ public class IndexerMain {
         //Se obtiene el path del archivo con las propiedades de las bases de datos
         File file = new File(IndexerMain.class.getProtectionDomain().getCodeSource().getLocation().getPath());
         Properties properties = new Properties();
+        List<Document> tweetsLucene;
         try{
             String resourcePath = file.getPath().replace("libs/PreVisor-Indexer-1.0.jar", "") + "resources/main/bd.properties";
             resourcePath = resourcePath.replace("%20", " ");
@@ -31,7 +33,10 @@ public class IndexerMain {
             properties.load(inputStream);
             List<Tweet> tweets = new MongoLoader(properties.getProperty("mongo_host"), properties.getProperty("mongo_port"), properties.getProperty("mongo_db_name"), properties.getProperty("mongo_coll_name")).getTweets();
             TweetIndexer indexer = new TweetIndexer(tweets);
-            indexer.searchTweets("señor");
+            tweetsLucene = indexer.searchTweets("fonasa");
+            for(Document doc : tweetsLucene){
+                System.out.println("\n" + doc.get("tweet"));
+            }
 
         } catch(IOException | ParseException e){
             e.printStackTrace();
