@@ -36,13 +36,12 @@ public class TweetIndexer {
         this.tweets = tweets;
     }
 
-    public int createIndex() throws IOException {
+    public void createIndex() throws IOException {
         this.dir = new RAMDirectory();
         Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_43);
         IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_43, analyzer);
 	    config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
         IndexWriter writer = new IndexWriter(this.dir, config);
-        int indexedTweets = 0;
         try{
             Document document;
             for(Tweet tweet : this.tweets){
@@ -50,21 +49,17 @@ public class TweetIndexer {
                 document.add(new TextField("tweet", tweet.getTweetText(), Field.Store.YES));
                 document.add(new StringField("username", tweet.getName(), Field.Store.YES));
                 writer.addDocument(document);
-                indexedTweets++;
             }
         } catch (Exception e){
             e.printStackTrace();
         } finally {
             writer.close();
         }
-        return indexedTweets;
     }
 
     //Método que realiza una búsqueda en el índice
     public List<Document> searchTweets(String queryStr) throws IOException, ParseException {
 
-        //Se crea un nuevo índice invertido
-        int indexedTweets = createIndex();
         List<Document> foundTweets = new ArrayList<>();
         //Query tokenizada
         String[] tokenizedQuery = queryStr.split(" ");
