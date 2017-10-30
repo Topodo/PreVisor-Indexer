@@ -39,4 +39,20 @@ public class MongoLoader {
         }
         return tweets;
     }
+
+    public MongoConnector getConnector() {
+        return connector;
+    }
+
+    public void setConnector(MongoConnector connector) {
+        this.connector = connector;
+    }
+
+    public void setTweets(MongoCollection<Document> tweets) {
+        this.tweets = tweets;
+    }
+
+    public MongoCollection<Document> getCollection(){
+        return this.tweets;
+    }
 }

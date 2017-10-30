@@ -33,6 +33,7 @@ public class IndexerMain {
             properties.load(inputStream);
             List<Tweet> tweets = new MongoLoader(properties.getProperty("mongo_host"), properties.getProperty("mongo_port"), properties.getProperty("mongo_db_name"), properties.getProperty("mongo_coll_name")).getTweets();
             TweetIndexer indexer = new TweetIndexer(tweets);
+            indexer.createIndex();
             tweetsLucene = indexer.searchTweets("fonasa");
             for(Document doc : tweetsLucene){
                 System.out.println("\n" + doc.get("tweet"));

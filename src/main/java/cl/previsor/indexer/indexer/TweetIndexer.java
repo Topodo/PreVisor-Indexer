@@ -3,10 +3,7 @@ package cl.previsor.indexer.indexer;
 import cl.previsor.indexer.databases.Tweet;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -48,6 +45,7 @@ public class TweetIndexer {
                 document = new Document();
                 document.add(new TextField("tweet", tweet.getTweetText(), Field.Store.YES));
                 document.add(new StringField("username", tweet.getName(), Field.Store.YES));
+                document.add(new LongField("id", tweet.getIdTweet(), Field.Store.YES));
                 writer.addDocument(document);
             }
         } catch (Exception e){
